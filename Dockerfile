@@ -19,6 +19,11 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 # Install Composer globally
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Install Node.js v20.x and npm
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g npm@latest
+
 # Set the working directory
 WORKDIR /var/www/html
 
