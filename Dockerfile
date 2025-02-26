@@ -24,11 +24,29 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get install -y nodejs && \
     npm install -g npm@latest
 
+# Create a non-root user and switch to it
+RUN useradd -m laravel && \
+    chown -R laravel:laravel /var/www/html
+USER laravel
+
 # Set the working directory
 WORKDIR /var/www/html
 
+# Copy application files (ensure this is done after installing dependencies for better caching)
+COPY --chown=laravel:laravel . .
+
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader
+
+# Install Node.js dependencies
+RUN npm install && npm run build
+
 # Expose port 8000
 EXPOSE 8000
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+    CMD curl -f http://localhost:8000 || exit 1
 
 # Start the PHP development server
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
