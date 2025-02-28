@@ -24,16 +24,14 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get install -y nodejs && \
     npm install -g npm@latest
 
-# Create a non-root user and switch to it
-RUN useradd -m laravel && \
-    chown -R laravel:laravel /var/www/html
-USER laravel
-
 # Set the working directory
 WORKDIR /var/www/html
 
-# Copy application files (ensure this is done after installing dependencies for better caching)
-COPY --chown=laravel:laravel . .
+# Copy application files
+COPY . .
+
+# Set correct permissions for the storage directory
+RUN chmod -R 775 /var/www/html/storage
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader

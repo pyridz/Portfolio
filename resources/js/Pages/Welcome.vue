@@ -1,5 +1,9 @@
 <template>
-  <div class="bg-blue-500 text-white p-4">
+  <div>
     <h1 class="text-2xl font-bold">Welcome to My Portfolio!</h1>
   </div>
 </template>
+
+<script setup>
+// Your script logic here
+</script>

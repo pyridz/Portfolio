@@ -6,8 +6,10 @@ services:
     container_name: portfolio-app
     volumes:
       - .:/var/www/html
+      - portfolio_node_modules:/var/www/html/node_modules  # Use a named volume for node_modules
     ports:
       - "8000:8000"
+      - "5173:5173"  # Vite server
     depends_on:
       db:
         condition: service_healthy
@@ -22,11 +24,12 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - portfolio_mysql_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 5s
       timeout: 10s
       retries: 10
 volumes:
-  mysql_data:
+  portfolio_mysql_data:
+  portfolio_node_modules:  # Add this volume
